@@ -18,51 +18,21 @@ body {
   font-family: 'Segoe UI', sans-serif;
   overflow: hidden;
   text-align: center;
+  padding: 20px;
 }
 
-.container { display: none; color: white; }
+.container {
+  color: white;
+  max-width: 600px;
+  width: 100%;
+}
 
 h1 {
   font-size: clamp(2.5rem, 8vw, 4rem);
-  position: relative;
-  display: inline-block;
+  margin-bottom: 10px;
+  animation: heartbeat 1.2s infinite;
 }
 
-/* 🐱 แมวเกาะ */
-.clingCat {
-  position: absolute;
-  bottom: 85%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 180px;
-  pointer-events: none;
-  animation: blink 4s infinite;
-  transition: 0.3s;
-}
-
-/* 👀 กระพริบ */
-@keyframes blink {
-  0%, 92%, 100% { transform: translateX(-50%) scaleY(1); }
-  95% { transform: translateX(-50%) scaleY(0.1); }
-}
-
-/* 😳 หน้าแดง */
-.blush {
-  filter: hue-rotate(-20deg) saturate(1.4) brightness(1.1);
-  transform: translateX(-50%) scale(1.05);
-}
-
-/* 😵 สั่น */
-@keyframes shake {
-  0% { transform: translateX(-50%) translateX(0); }
-  25% { transform: translateX(-50%) translateX(-5px); }
-  50% { transform: translateX(-50%) translateX(5px); }
-  75% { transform: translateX(-50%) translateX(-5px); }
-  100% { transform: translateX(-50%) translateX(0); }
-}
-.shake { animation: shake 0.3s infinite; }
-
-/* ปุ่ม */
 button {
   margin-top: 20px;
   padding: 12px 30px;
@@ -73,18 +43,25 @@ button {
   font-size: 1rem;
   cursor: pointer;
   transition: 0.3s;
+  position: relative;
 }
+
 button:hover {
   background: #ff4fa3;
   color: white;
 }
 
-/* 💕 หัวใจลอย */
+@keyframes heartbeat {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
 .heart {
   position: absolute;
   color: white;
   animation: floatUp linear forwards;
 }
+
 @keyframes floatUp {
   from { transform: translateY(100vh); opacity: 1; }
   to { transform: translateY(-10vh); opacity: 0; }
@@ -99,23 +76,18 @@ button:hover {
   <button onclick="goNext()">กดดู 💖</button>
 </div>
 
-<div class="container" id="page2">
-  <h1>
-    เป็นแฟนกับเรานะ ❤️
-    <img src="cat.png" class="clingCat" id="cat">
-  </h1>
-  <br>
+<div class="container" id="page2" style="display:none;">
+  <h1 id="loveText">เป็นแฟนกับเรานะ ❤️</h1>
   <button onclick="sayYes()">ตกลง 💘</button>
-  <button id="noBtn">ไม่</button>
+  <button id="noBtn" onmouseover="moveButton()">ไม่ 😜</button>
 </div>
 
-<div class="container" id="page3">
-  <h1>เราเป็นแฟนกันแล้วนะ ❤️</h1>
-  <p>ตั้งแต่วันนี้ไป ห้ามหนีแล้วนะ 😆💕</p>
-</div>
+<audio id="loveMusic" loop>
+  <source src="Fire_Work.mp3" type="audio/mpeg">
+</audio>
 
 <script>
-document.getElementById("page1").style.display = "block";
+const webhookURL = "YOUR_WEBHOOK_URL";
 
 function goNext() {
   document.getElementById("page1").style.display = "none";
@@ -123,36 +95,44 @@ function goNext() {
 }
 
 function sayYes() {
-  const cat = document.getElementById("cat");
-  cat.classList.add("blush");
+  const now = new Date().toLocaleString();
 
-  document.getElementById("page2").style.display = "none";
-  document.getElementById("page3").style.display = "block";
-
+  document.getElementById("loveMusic").play();
   setInterval(createHeart, 300);
+
+  fetch(webhookURL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      content: `💖 มีคนตอบตกลงแล้ว!\nเวลา: ${now}`
+    })
+  });
+}
+
+function moveButton() {
+  const btn = document.getElementById("noBtn");
+  btn.style.position = "absolute";
+  btn.style.left = Math.random() * 80 + "vw";
+  btn.style.top = Math.random() * 80 + "vh";
 }
 
 function createHeart() {
   const heart = document.createElement("div");
   heart.classList.add("heart");
   heart.innerHTML = "❤";
+
   heart.style.left = Math.random() * 100 + "vw";
   heart.style.fontSize = Math.random() * 25 + 10 + "px";
   heart.style.animationDuration = Math.random() * 3 + 3 + "s";
+
   document.body.appendChild(heart);
-  setTimeout(() => heart.remove(), 6000);
+
+  setTimeout(() => {
+    heart.remove();
+  }, 6000);
 }
-
-/* 😵 สั่นตอนเข้าใกล้ปุ่มไม่ */
-const noBtn = document.getElementById("noBtn");
-const cat = document.getElementById("cat");
-
-noBtn.addEventListener("mouseenter", () => {
-  cat.classList.add("shake");
-});
-noBtn.addEventListener("mouseleave", () => {
-  cat.classList.remove("shake");
-});
 </script>
 
 </body>
