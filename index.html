@@ -75,11 +75,13 @@ button:hover {
 
 <body>
 
+<!-- หน้าแรก -->
 <div class="container" id="page1">
   <h1>เรามีอะไรจะบอก ❤️</h1>
   <button onclick="goNext()">กดดู 💖</button>
 </div>
 
+<!-- หน้าถาม -->
 <div class="container" id="page2" style="display:none;">
   <h1>เป็นแฟนกับเรานะ ❤️</h1>
   <button onclick="sayYes()">ตกลง 💘</button>
@@ -87,6 +89,12 @@ button:hover {
           onmouseover="moveButton(); showEmojis(event)">
     ไม่
   </button>
+</div>
+
+<!-- หน้าสำเร็จ -->
+<div class="container" id="page3" style="display:none;">
+  <h1>เราเป็นแฟนกันแล้วนะ ❤️</h1>
+  <p>ตั้งแต่วันนี้ไป ห้ามหนีแล้วนะ 😆💕</p>
 </div>
 
 <audio id="loveMusic" loop>
@@ -104,18 +112,24 @@ function goNext() {
 function sayYes() {
   const now = new Date().toLocaleString();
 
+  // เล่นเพลง
   document.getElementById("loveMusic").play();
-  setInterval(createHeart, 300);
 
+  // ส่ง Discord
   fetch(webhookURL, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       content: `💖 มีคนตอบตกลงแล้ว!\nเวลา: ${now}`
     })
   });
+
+  // เปลี่ยนหน้า
+  document.getElementById("page2").style.display = "none";
+  document.getElementById("page3").style.display = "block";
+
+  // หัวใจลอย
+  setInterval(createHeart, 300);
 }
 
 function moveButton() {
@@ -139,10 +153,7 @@ function showEmojis(e) {
     emoji.style.animation = "fadeOut 1s forwards";
 
     document.body.appendChild(emoji);
-
-    setTimeout(() => {
-      emoji.remove();
-    }, 1000);
+    setTimeout(() => emoji.remove(), 1000);
   }
 }
 
@@ -156,10 +167,7 @@ function createHeart() {
   heart.style.animationDuration = Math.random() * 3 + 3 + "s";
 
   document.body.appendChild(heart);
-
-  setTimeout(() => {
-    heart.remove();
-  }, 6000);
+  setTimeout(() => heart.remove(), 6000);
 }
 </script>
 
