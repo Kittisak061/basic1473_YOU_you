@@ -18,21 +18,51 @@ body {
   font-family: 'Segoe UI', sans-serif;
   overflow: hidden;
   text-align: center;
-  padding: 20px;
 }
 
-.container {
-  color: white;
-  max-width: 600px;
-  width: 100%;
-  display: none;
-}
+.container { display: none; color: white; }
 
 h1 {
   font-size: clamp(2.5rem, 8vw, 4rem);
-  animation: heartbeat 1.2s infinite;
+  position: relative;
+  display: inline-block;
 }
 
+/* 🐱 แมวเกาะ */
+.clingCat {
+  position: absolute;
+  bottom: 85%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 180px;
+  pointer-events: none;
+  animation: blink 4s infinite;
+  transition: 0.3s;
+}
+
+/* 👀 กระพริบ */
+@keyframes blink {
+  0%, 92%, 100% { transform: translateX(-50%) scaleY(1); }
+  95% { transform: translateX(-50%) scaleY(0.1); }
+}
+
+/* 😳 หน้าแดง */
+.blush {
+  filter: hue-rotate(-20deg) saturate(1.4) brightness(1.1);
+  transform: translateX(-50%) scale(1.05);
+}
+
+/* 😵 สั่น */
+@keyframes shake {
+  0% { transform: translateX(-50%) translateX(0); }
+  25% { transform: translateX(-50%) translateX(-5px); }
+  50% { transform: translateX(-50%) translateX(5px); }
+  75% { transform: translateX(-50%) translateX(-5px); }
+  100% { transform: translateX(-50%) translateX(0); }
+}
+.shake { animation: shake 0.3s infinite; }
+
+/* ปุ่ม */
 button {
   margin-top: 20px;
   padding: 12px 30px;
@@ -43,61 +73,46 @@ button {
   font-size: 1rem;
   cursor: pointer;
   transition: 0.3s;
-  position: relative;
 }
-
 button:hover {
   background: #ff4fa3;
   color: white;
 }
 
-@keyframes heartbeat {
-  0%,100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-}
-
+/* 💕 หัวใจลอย */
 .heart {
   position: absolute;
   color: white;
   animation: floatUp linear forwards;
 }
-
 @keyframes floatUp {
   from { transform: translateY(100vh); opacity: 1; }
   to { transform: translateY(-10vh); opacity: 0; }
-}
-
-@keyframes fadeOut {
-  from { opacity: 1; transform: scale(1); }
-  to { opacity: 0; transform: scale(1.5); }
 }
 </style>
 </head>
 
 <body>
 
-<!-- หน้าแรก -->
 <div class="container" id="page1">
   <h1>เรามีอะไรจะบอก ❤️</h1>
   <button onclick="goNext()">กดดู 💖</button>
 </div>
 
-<!-- หน้าถาม -->
 <div class="container" id="page2">
-  <h1>เป็นแฟนกับเรานะ ❤️</h1>
+  <h1>
+    เป็นแฟนกับเรานะ ❤️
+    <img src="cat.png" class="clingCat" id="cat">
+  </h1>
+  <br>
   <button onclick="sayYes()">ตกลง 💘</button>
-  <button id="noBtn" onmouseover="moveButton(); showEmojis(event)">ไม่</button>
+  <button id="noBtn">ไม่</button>
 </div>
 
-<!-- หน้าสำเร็จ -->
 <div class="container" id="page3">
   <h1>เราเป็นแฟนกันแล้วนะ ❤️</h1>
   <p>ตั้งแต่วันนี้ไป ห้ามหนีแล้วนะ 😆💕</p>
 </div>
-
-<audio id="loveMusic" loop>
-  <source src="Fire_Work.mp3" type="audio/mpeg">
-</audio>
 
 <script>
 document.getElementById("page1").style.display = "block";
@@ -108,49 +123,36 @@ function goNext() {
 }
 
 function sayYes() {
-  document.getElementById("loveMusic").play().catch(()=>{});
+  const cat = document.getElementById("cat");
+  cat.classList.add("blush");
+
   document.getElementById("page2").style.display = "none";
   document.getElementById("page3").style.display = "block";
+
   setInterval(createHeart, 300);
-}
-
-function moveButton() {
-  const btn = document.getElementById("noBtn");
-  btn.style.position = "absolute";
-  btn.style.left = Math.random() * 80 + "vw";
-  btn.style.top = Math.random() * 80 + "vh";
-}
-
-function showEmojis(e) {
-  const emojis = ["😂","😜","🥺","💔","😭","😳"];
-
-  for (let i = 0; i < 6; i++) {
-    const emoji = document.createElement("div");
-    emoji.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
-    emoji.style.position = "absolute";
-    emoji.style.left = e.clientX + (Math.random()*60 - 30) + "px";
-    emoji.style.top = e.clientY + (Math.random()*60 - 30) + "px";
-    emoji.style.fontSize = "24px";
-    emoji.style.pointerEvents = "none";
-    emoji.style.animation = "fadeOut 1s forwards";
-
-    document.body.appendChild(emoji);
-    setTimeout(() => emoji.remove(), 1000);
-  }
 }
 
 function createHeart() {
   const heart = document.createElement("div");
   heart.classList.add("heart");
   heart.innerHTML = "❤";
-
   heart.style.left = Math.random() * 100 + "vw";
   heart.style.fontSize = Math.random() * 25 + 10 + "px";
   heart.style.animationDuration = Math.random() * 3 + 3 + "s";
-
   document.body.appendChild(heart);
   setTimeout(() => heart.remove(), 6000);
 }
+
+/* 😵 สั่นตอนเข้าใกล้ปุ่มไม่ */
+const noBtn = document.getElementById("noBtn");
+const cat = document.getElementById("cat");
+
+noBtn.addEventListener("mouseenter", () => {
+  cat.classList.add("shake");
+});
+noBtn.addEventListener("mouseleave", () => {
+  cat.classList.remove("shake");
+});
 </script>
 
 </body>
