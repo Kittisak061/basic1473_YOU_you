@@ -1,56 +1,79 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For My Love ❤️</title>
+
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: pink;
+  font-family: sans-serif;
+  text-align: center;
+  overflow: hidden;
+}
+
+.container { display: none; }
+
+h1 { font-size: 40px; }
+
+button {
+  padding: 10px 25px;
+  margin: 10px;
+  font-size: 18px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+}
+
+#yesBtn { background: white; color: hotpink; }
+#noBtn { background: white; color: gray; position: relative; }
+</style>
+</head>
+
+<body>
+
+<div id="page1" class="container">
+  <h1>เรามีอะไรจะบอก ❤️</h1>
+  <button onclick="goNext()">กดดู 💖</button>
+</div>
+
+<div id="page2" class="container">
+  <h1>เป็นแฟนกับเรานะ ❤️</h1>
+  <button id="yesBtn" onclick="sayYes()">ตกลง 💘</button>
+  <button id="noBtn" onmouseover="moveNo()">ไม่</button>
+</div>
+
+<div id="page3" class="container">
+  <h1>เราเป็นแฟนกันแล้วนะ ❤️</h1>
+  <p>ตั้งแต่วันนี้ไป ห้ามหนีแล้วนะ 😆💕</p>
+</div>
+
 <script>
+document.getElementById("page1").style.display = "block";
+
 function goNext() {
   document.getElementById("page1").style.display = "none";
   document.getElementById("page2").style.display = "block";
 }
 
 function sayYes() {
-  // เล่นเพลง
-  document.getElementById("loveMusic").play();
-
-  // เปลี่ยนหน้า
   document.getElementById("page2").style.display = "none";
   document.getElementById("page3").style.display = "block";
-
-  // หัวใจลอย
-  setInterval(createHeart, 300);
 }
 
-function moveButton() {
+function moveNo() {
   const btn = document.getElementById("noBtn");
   btn.style.position = "absolute";
   btn.style.left = Math.random() * 80 + "vw";
   btn.style.top = Math.random() * 80 + "vh";
 }
-
-function showEmojis(e) {
-  const emojis = ["😂","😜","🥺","💔","😭","😳"];
-
-  for (let i = 0; i < 6; i++) {
-    const emoji = document.createElement("div");
-    emoji.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
-    emoji.style.position = "absolute";
-    emoji.style.left = e.clientX + (Math.random()*60 - 30) + "px";
-    emoji.style.top = e.clientY + (Math.random()*60 - 30) + "px";
-    emoji.style.fontSize = "24px";
-    emoji.style.pointerEvents = "none";
-    emoji.style.animation = "fadeOut 1s forwards";
-
-    document.body.appendChild(emoji);
-    setTimeout(() => emoji.remove(), 1000);
-  }
-}
-
-function createHeart() {
-  const heart = document.createElement("div");
-  heart.classList.add("heart");
-  heart.innerHTML = "❤";
-
-  heart.style.left = Math.random() * 100 + "vw";
-  heart.style.fontSize = Math.random() * 25 + 10 + "px";
-  heart.style.animationDuration = Math.random() * 3 + 3 + "s";
-
-  document.body.appendChild(heart);
-  setTimeout(() => heart.remove(), 6000);
-}
 </script>
+
+</body>
+</html>
