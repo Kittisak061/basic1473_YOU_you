@@ -29,7 +29,6 @@ body {
 
 h1 {
   font-size: clamp(2.5rem, 8vw, 4rem);
-  margin-bottom: 10px;
   animation: heartbeat 1.2s infinite;
 }
 
@@ -66,6 +65,11 @@ button:hover {
   from { transform: translateY(100vh); opacity: 1; }
   to { transform: translateY(-10vh); opacity: 0; }
 }
+
+@keyframes fadeOut {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(1.5); }
+}
 </style>
 </head>
 
@@ -77,9 +81,12 @@ button:hover {
 </div>
 
 <div class="container" id="page2" style="display:none;">
-  <h1 id="loveText">เป็นแฟนกับเรานะ ❤️</h1>
+  <h1>เป็นแฟนกับเรานะ ❤️</h1>
   <button onclick="sayYes()">ตกลง 💘</button>
-  <button id="noBtn" onmouseover="moveButton()">ไม่ 😜</button>
+  <button id="noBtn"
+          onmouseover="moveButton(); showEmojis(event)">
+    ไม่
+  </button>
 </div>
 
 <audio id="loveMusic" loop>
@@ -116,6 +123,27 @@ function moveButton() {
   btn.style.position = "absolute";
   btn.style.left = Math.random() * 80 + "vw";
   btn.style.top = Math.random() * 80 + "vh";
+}
+
+function showEmojis(e) {
+  const emojis = ["😂","😜","🥺","💔","😭","😳"];
+
+  for (let i = 0; i < 6; i++) {
+    const emoji = document.createElement("div");
+    emoji.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+    emoji.style.position = "absolute";
+    emoji.style.left = e.clientX + (Math.random()*60 - 30) + "px";
+    emoji.style.top = e.clientY + (Math.random()*60 - 30) + "px";
+    emoji.style.fontSize = "24px";
+    emoji.style.pointerEvents = "none";
+    emoji.style.animation = "fadeOut 1s forwards";
+
+    document.body.appendChild(emoji);
+
+    setTimeout(() => {
+      emoji.remove();
+    }, 1000);
+  }
 }
 
 function createHeart() {
